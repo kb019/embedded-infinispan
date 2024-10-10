@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: infinispan-cluster
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: infinispan
+  template:
+    metadata:
+      labels:
+        app: infinispan
+    spec:
+      containers:
+        - name: application
+          image: infinispan-embedded
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 8080
+              protocol: TCP
+            - containerPort: 8888
+              protocol: TCP
+          env:
+            - name: JAVA_OPTS
+              value: "-Djgroups.dns.query=infinispan-discovery-service.infinispan.svc.cluster.local -Dinfinispan.stack=kubernetes"

@@ -9,7 +9,7 @@
     </jgroups>
 
     <cache-container name="default" statistics="true">
-        <transport cluster="infinispan-cluster" stack="jgroups"  lock-timeout="60000"/>
+        <transport cluster="infinispan-cluster-global" stack="${infinispan.stack:jgroups}"  lock-timeout="60000"/>
 
         <local-cache name="myCache">
             <encoding>
