@@ -1,15 +1,11 @@
 <infinispan
-        xmlns="urn:infinispan:config:15.0"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:schemaLocation="urn:infinispan:config:15.0 https://infinispan.org/schemas/infinispan-config-15.0.xsd">
+        xsi:schemaLocation="urn:infinispan:config:13.0 https://infinispan.org/schemas/infinispan-config-13.0.xsd"
+        xmlns="urn:infinispan:config:13.0">
 
 
-    <jgroups>
-        <stack-file name="jgroups" path="classpath:jgroups.xml"/>
-    </jgroups>
 
-    <cache-container name="default" statistics="true">
-        <transport cluster="infinispan-cluster-global" stack="${infinispan.stack:jgroups}"  lock-timeout="60000"/>
+    <cache-container>
 
         <local-cache name="myCache">
             <encoding>
@@ -18,9 +14,13 @@
             </encoding>
             <memory max-count="10000"/>
         </local-cache>
-<!--        <distributed-cache name="myClusteredCache" owners="1">-->
-<!--            <state-transfer/>-->
-<!--        </distributed-cache>-->
-    </cache-container>
+        <local-cache-configuration name="entity" simple-cache="true" statistics="false" statistics-available="false">
+            <encoding media-type="application/x-java-object"/>
+            <transaction mode="NONE" />
+            <expiration max-idle="100000" interval="5000"/>
+            <memory max-count="10000"/>
+        </local-cache-configuration>
 
+    </cache-container>
 </infinispan>
+

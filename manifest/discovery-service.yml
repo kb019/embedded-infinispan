@@ -7,9 +7,10 @@ metadata:
 spec:
   type: ClusterIP
   clusterIP: None
+  publishNotReadyAddresses: true
   selector:
     app: infinispan
   ports:
     - protocol: TCP
-      port: 8888
-      targetPort: 8888
+      port: 7800
+      targetPort: 7800

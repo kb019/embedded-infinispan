@@ -1,0 +1,30 @@
+<infinispan
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xsi:schemaLocation="urn:infinispan:config:13.0 https://infinispan.org/schemas/infinispan-config-13.0.xsd"
+		xmlns="urn:infinispan:config:13.0">
+
+	<jgroups>
+		<stack-file name="api-jgroups" path="${hibernate.cache.infinispan.jgroups_cfg:default-configs/default-jgroups-tcp.xml}"/>
+	</jgroups>
+
+	<cache-container>
+		<transport stack="api-jgroups" cluster="infinispan-api-cluster"/>
+
+		<distributed-cache name="myCache" owners="2">
+			<encoding>
+				<key media-type="application/x-java-object"/>
+				<value media-type="application/x-java-object"/>
+			</encoding>
+			<memory max-count="10000"/>
+		</distributed-cache>
+		<!-- Default configuration is appropriate for entity/collection caching. -->
+		<invalidation-cache-configuration name="entity" remote-timeout="20000" statistics="false" statistics-available="false">
+			<encoding media-type="application/x-java-object"/>
+			<locking concurrency-level="1000" acquire-timeout="15000"/>
+			<transaction mode="NONE" />
+			<expiration max-idle="100000" interval="5000"/>
+			<memory max-count="10000"/>
+		</invalidation-cache-configuration>
+
+	</cache-container>
+</infinispan>

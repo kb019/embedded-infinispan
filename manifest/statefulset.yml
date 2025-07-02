@@ -3,7 +3,7 @@ kind: StatefulSet
 metadata:
   name: infinispan-cluster
 spec:
-  replicas: 3
+  replicas: 2
   selector:
     matchLabels:
       app: infinispan
@@ -12,15 +12,21 @@ spec:
       labels:
         app: infinispan
     spec:
+      serviceAccountName: backendpoc
+      securityContext:
+        fsGroup: 1001
+        fsGroupChangePolicy: Always
+        runAsUser: 0
       containers:
         - name: application
+          securityContext: {}
           image: infinispan-embedded
           imagePullPolicy: Never
           ports:
             - containerPort: 8080
               protocol: TCP
-            - containerPort: 8888
+            - containerPort: 7800
               protocol: TCP
           env:
             - name: JAVA_OPTS
-              value: "-Djgroups.dns.query=infinispan-discovery-service.infinispan.svc.cluster.local -Dinfinispan.stack=kubernetes"
+              value: "-Dcache.type=cluster -Djgroups.dns.query=infinispan-discovery-service.default.svc.cluster.local -Djgroups.bind.address=SITE_LOCAL -Djava.net.preferIPv4Stack=false -Dhibernate.cache.infinispan.jgroups_cfg=default-configs/default-jgroups-kubernetes.xml"
